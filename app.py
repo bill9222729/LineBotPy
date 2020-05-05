@@ -356,6 +356,7 @@ def get_or_create_user(user_id):
 
 
 # 初始化產品資訊
+@app.before_first_request
 def init_products():
     # 判斷資料庫是否存在
     result = init_db()

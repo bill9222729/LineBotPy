@@ -47,25 +47,11 @@ PAY_WEB_URL = ''
 def shutdown_session(exception=None):
     db_session.remove()
 
+#LIFF的範例文件
 @app.route('/index')
 def index():
     #路徑不須加 templates
-    return render_template(r"test.html")
-
-@app.route('/signin', methods=['GET'])
-def signin_form():
-    return '''<form action="/signin" method="post">
-              <p><input name="username"></p>
-              <p><input name="password" type="password"></p>
-              <p><button type="submit">Sign In</button></p>
-              </form>'''
-
-@app.route('/signin', methods=['POST'])
-def signin():
-    # 需要从request对象读取表单内容：
-    if request.form['username']=='admin' and request.form['password']=='password':
-        return '<h3>Hello, admin!</h3>'
-    return '<h3>Bad username or password.</h3>'
+    return render_template(r"index.html")
 
 @app.route("/liff", methods=['GET'])
 def liff():

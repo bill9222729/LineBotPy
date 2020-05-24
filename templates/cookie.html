@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <script src="{{ config.STATIC_URL }}/static/cookieJS.js"></script>
+    <title>CookieTest</title>
+</head>
+<body>
+    <button type="button" onclick="displayCookies();">顯示所有 Cookie</button>
+    <button type="button" onclick="document.cookie='firstname=John'">建立 Cookie 1</button>
+    <button type="button" onclick="document.cookie='lastname=Smith'">建立 Cookie 2</button>
+    <button type="button" onclick="document.cookie='firstname=John;expires=Thu, 01 Jan 1970 00:00:00 GMT'">删除 Cookie 1</button>
+    <button type="button" onclick="document.cookie='lastname=Smith;expires=Thu, 01 Jan 1970 00:00:00 GMT'">删除 Cookie 2</button>
+</body>
+</html>

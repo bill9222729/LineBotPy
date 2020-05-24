@@ -47,11 +47,18 @@ PAY_WEB_URL = ''
 def shutdown_session(exception=None):
     db_session.remove()
 
-#LIFF的範例文件
+
+# LIFF的範例文件
 @app.route('/index')
 def index():
-    #路徑不須加 templates
+    # 路徑不須加 templates
     return render_template(r"index.html")
+
+# Cookie測試
+@app.route('/cookie')
+def cookie():
+    return render_template(r"cookie.html")
+
 
 @app.route("/liff", methods=['GET'])
 def liff():

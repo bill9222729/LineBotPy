@@ -1,4 +1,6 @@
-from flask import Flask, request, abort, redirect, render_template
+import json
+
+from flask import Flask, request, abort, redirect, render_template, jsonify
 
 from linebot import (
     LineBotApi, WebhookHandler
@@ -48,16 +50,39 @@ def shutdown_session(exception=None):
     db_session.remove()
 
 
+@app.route('/sendjson', methods=['POST'])
+def sendjson():
+    # 接受前端发来的数据
+    data = json.loads(request.form.get('data'))
+    # lesson: "Operation System"
+    # score: 100
+    lesson = data["lesson"]
+    score = data["score"]
+    # 自己在本地组装成Json格式,用到了flask的jsonify方法
+    info = dict()
+    info['name'] = "pengshuang"
+    info['lesson'] = lesson
+    info['score'] = score
+    return jsonify(info)
+
+
 # LIFF的範例文件
 @app.route('/index')
 def index():
     # 路徑不須加 templates
     return render_template(r"index.html")
 
+
 # Cookie測試
 @app.route('/cookie')
 def cookie():
     return render_template(r"cookie.html")
+
+
+# sqlite測試
+@app.route('/sqltest')
+def sqlTest():
+    return render_template(r"sqltest.html")
 
 
 @app.route("/liff", methods=['GET'])

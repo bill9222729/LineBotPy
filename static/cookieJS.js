@@ -1,3 +1,20 @@
+$(document).ready(function() {
+    var data = {
+        data: JSON.stringify({
+            "lesson": "Operation System",
+            "score": 100
+        })
+    }
+    $.ajax({
+        url: "/sendjson",
+        type: 'POST',
+        data: data,
+        success: function(msg) {
+            alert(msg.name)
+        }
+    })
+});
+
 function displayCookies() {
     var fname = getCookie("firstname");
     if (fname == null) {

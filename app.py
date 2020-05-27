@@ -65,6 +65,19 @@ def sendjson():
     info['score'] = score
     return jsonify(info)
 
+@app.route('/getSQL', methods=['POST'])
+def getSQL():
+    data = json.loads(request.form.get('data'))
+
+    products = db_session.query(Products).all()
+
+    info = dict()
+    info['name'] = ''
+
+    for product in products:
+        info['name'] += (','+product.name)
+
+    return jsonify(info)
 
 # LIFF的範例文件
 @app.route('/index')

@@ -2,15 +2,43 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.8.0/jquery.min.js"></script>
+    <!--因為要引入線上的jquery，不過因為她網址是http，所以要加下面這一行讓他允許引入http的函式庫-->
+    <meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests">
+    <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.0/jquery.min.js"></script>
     <script src="{{ config.STATIC_URL }}/static/cookieJS.js"></script>
+    <style>
+        .container {
+            width: 100%;
+            overflow-x: scroll;
+            overflow-y: hidden;
+            white-space: nowrap;
+        }
+
+        .container .item {
+            display: inline-block;
+            box-sizing: border-box;
+            font-size:50px;
+            height: 100px;
+            width: auto;
+        }
+
+        .bb {
+            font-size:100px;
+        }
+    </style>
     <title>CookieTest</title>
 </head>
 <body>
-    <button type="button" onclick="displayCookies();">顯示所有 Cookie</button>
-    <button type="button" onclick="document.cookie='firstname=John'">建立 Cookie 1</button>
-    <button type="button" onclick="document.cookie='lastname=Smith'">建立 Cookie 2</button>
-    <button type="button" onclick="document.cookie='firstname=John;expires=Thu, 01 Jan 1970 00:00:00 GMT'">删除 Cookie 1</button>
-    <button type="button" onclick="document.cookie='lastname=Smith;expires=Thu, 01 Jan 1970 00:00:00 GMT'">删除 Cookie 2</button>
+<div class="container">
+    <button type="button" onclick="displayCookies();" class="item">顯示所有 Cookie</button>
+    <button type="button" onclick="document.cookie='firstname=John'" class="item">建立 Cookie 1</button>
+    <button type="button" onclick="document.cookie='lastname=Smith'" class="item">建立 Cookie 2</button>
+    <button type="button" onclick="document.cookie='firstname=John;expires=Thu, 01 Jan 1970 00:00:00 GMT'" class="item">删除 Cookie 1</button>
+    <button type="button" onclick="document.cookie='lastname=Smith;expires=Thu, 01 Jan 1970 00:00:00 GMT'" class="item">删除 Cookie 2</button>
+    <button type="button" class="aa">拉出資料庫資料</button>
+</div>
+<div class="product">
+
+</div>
 </body>
 </html>

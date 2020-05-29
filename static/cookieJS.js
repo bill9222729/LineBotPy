@@ -40,6 +40,25 @@
             }
         })
     });
+    $("#change_name").click(function(){
+        var name_data = {
+        data: JSON.stringify({
+            "name": $("#change").val(),
+        })
+        }
+        $.ajax({
+            url: "/setSQL",
+            type: "POST",
+            data: name_data,
+            success:function(msg) {
+                    if(msg == "OK"){
+                        alert("修改成功");
+                    }
+                    else
+                        alert("修改失敗")
+                }
+        })
+    })
 });
 
 

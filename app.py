@@ -65,6 +65,8 @@ def sendjson():
     info['score'] = score
     return jsonify(info)
 
+
+# 取得SQL的資料
 @app.route('/getSQL', methods=['POST'])
 def getSQL():
     data = json.loads(request.form.get('data'))
@@ -75,9 +77,31 @@ def getSQL():
     info['name'] = ''
 
     for product in products:
-        info['name'] += (','+product.name)
+        info['name'] += (',' + product.name)
 
     return jsonify(info)
+
+
+# 寫入SQL
+@app.route('/setSQL', methods=['POST'])
+def setSQL():
+    # 取得來自前端的JSON資料
+    data = json.loads(request.form.get('data'))
+    # 取得資料庫table=user的資料
+    query = User.query.filter_by(id=data['user_id']).first()
+    if data['type'] == "name":
+        # 修改user裡面的user_name_custom
+        query.user_name_custom = data['content']
+    elif data['type'] == "home_address":
+        # 修改user裡面的home_address
+        query.home_address = data['content']
+    elif data['type'] == "company_address":
+        # 修改user裡面的company_address
+        query.company_address = data['content']
+    # 更新資料庫
+    db_session.commit()
+    return "OK"
+
 
 # LIFF的範例文件
 @app.route('/index')
@@ -96,6 +120,21 @@ def cookie():
 @app.route('/sqltest')
 def sqlTest():
     return render_template(r"sqltest.html")
+
+
+# 會員中心設定資料
+@app.route('/profile')
+def profile():
+    # 抓取網址夾帶的參數
+    # name為暱稱
+    # home_address為住家地址
+    # company_address為公司地址
+    redirect_url = request.args.get('liff.state')
+    profile_type = redirect_url.split('=')[1]
+    profile_id = redirect_url.split('=')[2]
+    print(profile_type)
+    print(profile_id)
+    return render_template(r"Profile.html", profileType=profile_type, profileId=profile_id)
 
 
 @app.route("/liff", methods=['GET'])

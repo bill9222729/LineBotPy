@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests">
+    <script charset="utf-8" src="https://static.line-scdn.net/liff/edge/2.1/sdk.js"></script>
+    <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.0/jquery.min.js"></script>
+    <script>
+    $(document).ready(function() {
+        const defaultLiffId = "1654173476-w14oyVOx"
+        var f2 = function(defaultLiffId) {
+            liff
+                .init({
+                    liffId: defaultLiffId
+                })
+                .then(() => {
+                    // start to use LIFF's api
+                    alert("成功")
+                }).catch((err) => {
+                    alert("erro");
+                });
+        }
+        f2(defaultLiffId);
+
+
+        //判斷使用者要用的是甚麼功能
+        if ("{{ profileType }}" == "name") {
+            alert("{{ profileType }}");
+            $(".name").show();
+        }
+        if ("{{ profileType }}" == "home_address") {
+            alert("{{ profileType }}");
+            $(".home_address").show();
+        }
+        if ("{{ profileType }}" == "company_address") {
+            alert("{{ profileType }}");
+            $(".company_address").show();
+        }
+        //設定更變三種訊息的確定按鈕的功能
+        //更改暱稱
+        $("#change_name").click(function() {
+            var info = {
+                data: JSON.stringify({
+                    "type": "name",
+                    "user_id": "{{profileId}}",
+                    "content": $("#name_input").val(),
+                })
+            }
+            $.ajax({
+                url: "/setSQL",
+                type: "POST",
+                data: info,
+                success: function(msg) {
+                    if (msg == "OK") {
+                        alert("修改成功");
+                    } else
+                        alert("修改失敗")
+                }
+            })
+        })
+        //更改住家地址
+        $("#change_home_address").click(function() {
+            var info = {
+                data: JSON.stringify({
+                    "type": "home_address",
+                    "user_id": "{{profileId}}",
+                    "content": $("#change_home_address").val(),
+                })
+            }
+            $.ajax({
+                url: "/setSQL",
+                type: "POST",
+                data: info,
+                success: function(msg) {
+                    if (msg == "OK") {
+                        alert("修改成功");
+                    } else
+                        alert("修改失敗")
+                }
+            })
+        })
+        //更改公司地址
+        $("#change_company_address").click(function() {
+            var info = {
+                data: JSON.stringify({
+                    "type": "company_address",
+                    "user_id": "{{profileId}}",
+                    "content": $("#company_address_input").val(),
+                })
+            }
+            $.ajax({
+                url: "/setSQL",
+                type: "POST",
+                data: info,
+                success: function(msg) {
+                    if (msg == "OK") {
+                        alert("修改成功");
+                    } else
+                        alert("修改失敗")
+                }
+            })
+        })
+    })
+
+    </script>
+    <title>會員中心</title>
+</head>
+<body>
+<div class="name" style="display:none">
+    請輸入名稱：<input type="text" name="欄位名稱" id="name_input">
+    <button type="button" id="change_name">確定</button>
+</div>
+<div class="home_address" style="display:none">
+    請輸入住家地址：<input type="text" name="欄位名稱" id="home_address_input">
+    <button type="button" id="change_home_address">確定</button>
+</div>
+<div class="company_address" style="display:none">
+    請輸入公司：<input type="text" name="欄位名稱" id="company_address_input">
+    <button type="button" id="change_company_address">確定</button>
+</div>
+</body>
+</html>

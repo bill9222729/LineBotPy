@@ -121,6 +121,11 @@ def cookie():
 def sqlTest():
     return render_template(r"sqltest.html")
 
+# notify測試
+@app.route('/notify')
+def notify():
+    return render_template(r"notify.html")
+
 
 # 會員中心設定資料
 @app.route('/profile')

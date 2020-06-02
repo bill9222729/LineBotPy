@@ -50,6 +50,7 @@ def shutdown_session(exception=None):
     db_session.remove()
 
 
+# 測試用
 @app.route('/sendjson', methods=['POST'])
 def sendjson():
     # 接受前端发来的数据
@@ -66,38 +67,44 @@ def sendjson():
     return jsonify(info)
 
 
-# 取得SQL的資料
-@app.route('/getSQL', methods=['POST'])
-def getSQL():
-    data = json.loads(request.form.get('data'))
-
-    products = db_session.query(Products).all()
-
-    info = dict()
-    info['name'] = ''
-
-    for product in products:
-        info['name'] += (',' + product.name)
-
-    return jsonify(info)
+# 會員中心
+@app.route('/profile')
+def YuChen():
+    return render_template(r"profile.html")
 
 
-# 寫入SQL
-@app.route('/setSQL', methods=['POST'])
-def setSQL():
+# 取得使用者資料
+@app.route('/getUserProfile', methods=['POST'])
+def getUserProfile():
     # 取得來自前端的JSON資料
     data = json.loads(request.form.get('data'))
     # 取得資料庫table=user的資料
     query = User.query.filter_by(id=data['user_id']).first()
-    if data['type'] == "name":
-        # 修改user裡面的user_name_custom
-        query.user_name_custom = data['content']
-    elif data['type'] == "home_address":
-        # 修改user裡面的home_address
-        query.home_address = data['content']
-    elif data['type'] == "company_address":
-        # 修改user裡面的company_address
-        query.company_address = data['content']
+    data['user_name_custom'] = query.user_name_custom
+    data['home_address'] = query.home_address
+    data['company_address'] = query.company_address
+    data['phone_number'] = query.phone_number
+    print(data)
+    return jsonify(data)
+
+
+# 寫入會員中心資料
+@app.route('/setProfile', methods=['POST'])
+def setProfile():
+    # 取得來自前端的JSON資料
+    data = json.loads(request.form.get('data'))
+    # 取得資料庫table=user的資料
+    query = User.query.filter_by(id=data['user_id']).first()
+    # 判斷資料有更新就更新
+    if data['user_name_custom'] != query.user_name_custom:
+        query.user_name_custom = data['user_name_custom']
+    if data['home_address'] != query.home_address:
+        query.user_name_custom = data['home_address']
+    if data['company_address'] != query.company_address:
+        query.user_name_custom = data['company_address']
+    if data['phone_number'] != query.phone_number:
+        query.user_name_custom = data['phone_number']
+
     # 更新資料庫
     db_session.commit()
     return "OK"
@@ -121,25 +128,11 @@ def cookie():
 def sqlTest():
     return render_template(r"sqltest.html")
 
+
 # notify測試
 @app.route('/notify')
 def notify():
     return render_template(r"notify.html")
-
-
-# 會員中心設定資料
-@app.route('/profile')
-def profile():
-    # 抓取網址夾帶的參數
-    # name為暱稱
-    # home_address為住家地址
-    # company_address為公司地址
-    redirect_url = request.args.get('liff.state')
-    profile_type = redirect_url.split('=')[1]
-    profile_id = redirect_url.split('=')[2]
-    print(profile_type)
-    print(profile_id)
-    return render_template(r"Profile.html", profileType=profile_type, profileId=profile_id)
 
 
 @app.route("/liff", methods=['GET'])
@@ -178,6 +171,8 @@ def callback():
     # get request body as text
     body = request.get_data(as_text=True)
     app.logger.info("Request body: " + body)
+
+    print(body)
 
     # handle webhook body
     try:
@@ -412,7 +407,6 @@ def handler_postback(event):
                                   liff_url=Config.LIFF_URL,
                                   url=pay_web_url))
                 ]))
-
         line_bot_api.reply_message(reply_token, message)
 
     return 'OK'

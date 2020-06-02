@@ -1,6 +1,7 @@
 window.onload = function() {
+    alert("成功");
     const useNodeJS = false;   // if you are not using a node server, set this value to false
-    const defaultLiffId = "1654173476-1re659nb";   // change the default LIFF value if you are not using a node server
+    const defaultLiffId = "1654173476-GO8zxXn6";   // change the default LIFF value if you are not using a node server
 
     // DO NOT CHANGE THIS
     let myLiffId = "";
@@ -21,6 +22,7 @@ window.onload = function() {
                 document.getElementById("nodeLiffIdErrorMessage").classList.remove('hidden');
             });
     } else {
+        alert("成功")
         myLiffId = defaultLiffId;
         initializeLiffOrDie(myLiffId);
     }

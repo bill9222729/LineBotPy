@@ -1,5 +1,6 @@
 import os
 
+
 class Config:
     # CHANNEL_ACCESS_TOKEN = os.environ['CHANNEL_ACCESS_TOKEN']
     # CHANNEL_SECRET = os.environ['CHANNEL_ACCESS_TOKEN']
@@ -18,3 +19,10 @@ class Config:
     LIFF_URL = 'https://liff.line.me/1654173476-1re659nb'
 
     STORE_IMAGE_URL = 'https://i.imgur.com/igoTNFV.png'
+
+    # 伺服器位置
+    SERVER_URI = 'https://e593cda5c426.ngrok.io'
+
+    # Notify資訊
+    NOTIFY_CLIENT_ID = 'SUMVZ46FKbFjW6FBYnIEX0'
+    NOTIFY_CLIENT_SECRET = 'PbjHUPe2WLtANsxdy8YpPds3uuXXE1vnPzwkX6gWzB1'

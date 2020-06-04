@@ -1,4 +1,6 @@
 $(document).ready(function () {
+    //設定畫面高度
+    //$('body').height(screen.height);
     //初始化LIFF
     var initializeLiff = function initializeLiff(myLiffId) {
         liff
@@ -41,6 +43,11 @@ $(document).ready(function () {
         })
     })
 
+    //關閉會員中心
+    $("#close_window").click(function () {
+        liff.closeWindow();
+    })
+
 
     //使用者的ID
     var user_id;
@@ -63,7 +70,6 @@ $(document).ready(function () {
                 type: "POST",
                 data: userProfile,
                 success: function (msg) {
-                    alert(msg["user_name_custom"]);
                     $("#name_input").attr({
                         'VALUE': msg["user_name_custom"],
                     })

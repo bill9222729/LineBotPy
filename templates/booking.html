@@ -1,0 +1,32 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <!--讓畫面不要縮放-->
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+    <!--讓js檔案可以載入https的函式庫-->
+    <meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests">
+    <title>訂位資訊</title>
+    <!--載入LIFF api-->
+    <script src="https://static.line-scdn.net/liff/edge/2.1/sdk.js"></script>
+    <!--載入JQuery-->
+    <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.0/jquery.min.js"></script>
+    <!--以下讓我們使用強大的日期選擇函式庫flatpickr-->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+    <!--載入booking.js檔-->
+    <script src="{{ config.STATIC_URL }}/static/js/booking.js?version=1.36"></script>
+</head>
+<body>
+<form>
+    姓名：<input type="text" id="user_name" size="30">
+    <input type="radio" name="sexuality" value="man" checked="true"> 先生
+    <input type="radio" name="sexuality" value="woman"> 小姐<br>
+    日期：<input type="text" id="datepicker" size="30"><br>
+    時間：<input type="text" id="timepicker" size="30"><br>
+    人數：<input type="text" id="members" size="30" VALUE="1"><br>
+    連絡電話：<input type="text" id="phone_number" size="30px"><br>
+    <button type="button" id="confirm">確定</button>
+</form>
+</body>
+</html>

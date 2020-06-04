@@ -2,16 +2,27 @@
 <html lang="en" dir="ltr">
 <head>
     <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!--限制縮放-->
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
     <meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests">
     <title>會員中心</title>
     <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.0/jquery.min.js"></script>
     <script src="https://static.line-scdn.net/liff/edge/2.1/sdk.js"></script>
-    <script src="{{ config.STATIC_URL }}/static/yuchen.js?version=1.17"></script>
+    <script src="{{ config.STATIC_URL }}/static/js/profile.js?version=1.05"></script>
+    <link rel="stylesheet" href="{{ config.STATIC_URL }}/static/css/profile.css?version=1.48">
 </head>
 <body>
 
-
+<img id="head" src="{{ config.STATIC_URL }}/static/img/屎蛋頭.jpg" alt="cat" title="profile_top">
+<div id="profileBackgroundDiv">
+    <table border="1">
+        <tr>
+            <td width=30%>
+                會員中心
+            </td>
+        </tr>
+    </table>
+</div>
 <div class="name">
     名稱：<input type="text" name="欄位名稱" id="name_input">
 </div>
@@ -25,6 +36,7 @@
     手機號碼：<input type="text" name="欄位名稱" id="phone_number_input">
 </div>
 <button type="button" id="change_all">確定</button>
+<button type="button" id="close_window">關閉視窗</button>
 
 </body>
 </html>

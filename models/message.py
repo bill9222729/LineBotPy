@@ -399,3 +399,25 @@ class AllMessage:
             }
         })
         return message
+
+    # 訂閱Notify
+    @staticmethod
+    def hookNotify(userid):
+        message = FlexSendMessage(alt_text='訂閱我們', contents={
+            "type": "bubble",
+            "body": {
+                "type": "box",
+                "layout": "vertical",
+                "contents": [
+                    {
+                        "type": "button",
+                        "action": {
+                            "type": "uri",
+                            "label": "訂閱",
+                            "uri": "https://e593cda5c426.ngrok.io/notify?userid={userid}".format(userid=userid)
+                        }
+                    }
+                ]
+            }
+        })
+        return message

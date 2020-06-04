@@ -25,6 +25,8 @@ class User(Base):
     created_time = Column(DateTime(), nullable=False, default=func.now())
     # 使用者資訊最後修改時間
     created_time_final = Column(DateTime(), nullable=False, default=func.now())
+    # LineNotify的token
+    notifyToken = Column(String(100), nullable=True, default="")
     # 是否為會員
     is_member = Column(Boolean, nullable=False, default=False)
     # 是否在註冊中

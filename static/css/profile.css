@@ -1,0 +1,49 @@
+#head {
+    width: 100%;
+    height: 20vh;
+    marginheight: "0px";
+    marginwidth: "0px";
+    vertical-align: bottom;
+    background-repeat: no-repeat;
+    background-size: 100% 100%;
+}
+
+body {
+    margin: 0px;
+}
+
+#profileBackgroundDiv {
+    width: 100%;
+    height: 20vh;
+    marginheight: "0px";
+    marginwidth: "0px";
+    background-color: #CCD2D0;
+}
+
+#profileBackgroundDiv div {
+    width: 80%;
+    height: 35%;
+    position: relative;
+    top: 30%;
+    /*display: flex;*/
+    /*align-items: end;*/
+    background-color: #D6D2C6;
+}
+
+#profileBackgroundDiv div div{
+    height: 100%;
+    vertical-align:bottom;
+}
+
+#profileBackgroundDiv table{
+    width: 80%;
+    height: 35%;
+    position: relative;
+    top: 30%;
+    background-color: #D6D2C6;
+}
+
+#profileBackgroundDiv table tr td{
+    vertical-align:bottom;
+}
+

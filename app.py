@@ -33,6 +33,8 @@ from models.order import Orders
 from models.item import Items
 # 匯入linepay模組
 from models.linepay import LinePay
+# 匯入Notify模組
+from models import lineNotify
 
 app = Flask(__name__)
 
@@ -67,9 +69,15 @@ def sendjson():
     return jsonify(info)
 
 
+# 訂位
+@app.route('/booking')
+def booking():
+    return render_template(r"booking.html")
+
+
 # 會員中心
 @app.route('/profile')
-def YuChen():
+def profile():
     return render_template(r"profile.html")
 
 
@@ -129,12 +137,6 @@ def sqlTest():
     return render_template(r"sqltest.html")
 
 
-# notify測試
-@app.route('/notify')
-def notify():
-    return render_template(r"notify.html")
-
-
 @app.route("/liff", methods=['GET'])
 def liff():
     print("注意")
@@ -161,6 +163,26 @@ def confirm():
         message = order.display_receipt()
         line_bot_api.push_message(order.user_id, message)
         return '<h1>你的訂單已經完成付款,感謝您的訂購</h1>'
+
+
+# notify測試
+@app.route('/notify')
+def notify():
+    userId = request.args.get('userid')
+    return render_template(r"notify.html", userId=userId)
+
+
+# notify連動成功
+@app.route("/hookNotify")
+def hookNotify():
+    authorizeCode = request.args.get('code')
+    userId = request.args.get('userid')
+    token = lineNotify.getNotifyToken(authorizeCode, userId)
+    query = User.query.filter_by(id=userId).first()
+    query.notifyToken = token
+    db_session.commit()
+    lineNotify.lineNotifyMessage(token, "從今以後你就成為我們廣播的俘虜ㄌ")
+    return 'OK'
 
 
 @app.route("/callback", methods=['POST'])
@@ -289,6 +311,33 @@ def handle_message(event):
 
         elif message_text == '待補':
             line_bot_api.reply_message(reply_token, TextSendMessage(text='cart'))
+
+        if message_text == "會員中心":
+            line_bot_api.reply_message(event.reply_token,
+                                       TextSendMessage(text='https://liff.line.me/1654173476-GO8zxXn6'))
+            return
+
+        # 訂閱Notify
+        if message_text == "訂閱":
+            line_bot_api.reply_message(event.reply_token,
+                                       AllMessage.hookNotify(user_id))
+            return
+
+        # # 發送消息
+        # if message_text == "發送公告":
+        #     headers = {
+        #         "Authorization": "Bearer " + token,
+        #         "Content-Type": "application/x-www-form-urlencoded"
+        #     }
+        #
+        #     payload = {'message': msg}
+        #     r = requests.post("https://notify-api.line.me/api/notify", headers=headers, data=payload)
+        #     return r.status_code
+        #
+        #     # 修改為你要傳送的訊息內容
+        #     message = '測試測試不要慌'
+        #     # 修改為你的權杖內容
+        #     token = 'JtYMKOLaaMj9uOav9QPAqPu63XqAimlUc2Gu3cZM1mk'
 
 
 @handler.add(PostbackEvent)

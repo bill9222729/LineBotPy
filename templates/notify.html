@@ -15,7 +15,7 @@
             var URL = 'https://notify-bot.line.me/oauth/authorize?';
             URL += 'response_type=code';
             URL += '&client_id=SUMVZ46FKbFjW6FBYnIEX0';
-            URL += '&redirect_uri=https://e593cda5c426.ngrok.io/hookNotify?userid={{userId}}';
+            URL += '&redirect_uri={{server_url}}/hookNotify?userid={{userId}}';
             URL += '&scope=notify';
             URL += '&state=NO_STATE';
             window.location.href = URL;

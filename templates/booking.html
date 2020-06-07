@@ -15,17 +15,21 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
     <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
     <!--載入booking.js檔-->
-    <script src="{{ config.STATIC_URL }}/static/js/booking.js?version=1.36"></script>
+    <script src="{{ config.STATIC_URL }}/static/js/booking.js?version=1.37"></script>
+    <link rel="stylesheet" href="{{ config.STATIC_URL }}/static/css/booking.css?version=1.14">
 </head>
 <body>
-<form>
-    姓名：<input type="text" id="user_name" size="30">
-    <input type="radio" name="sexuality" value="man" checked="true"> 先生
-    <input type="radio" name="sexuality" value="woman"> 小姐<br>
-    日期：<input type="text" id="datepicker" size="30"><br>
-    時間：<input type="text" id="timepicker" size="30"><br>
-    人數：<input type="text" id="members" size="30" VALUE="1"><br>
-    連絡電話：<input type="text" id="phone_number" size="30px"><br>
+<img src="{{ config.STATIC_URL }}/static/img/訂位資訊_top.jpg">
+<form id="form1">
+    姓名：<br><input type="text" id="user_name"><br>
+    <form id="form2">
+        <input type="radio" name="sexuality" value="man" checked="true"> 先生
+        <input type="radio" name="sexuality" value="woman"> 小姐<br>
+    </form>
+    日期：<br><input type="text" id="datepicker" size="30"><br>
+    時間：<br><input type="text" id="timepicker" size="30"><br>
+    人數：<br><input type="text" id="members" size="30" VALUE="1"><br>
+    連絡電話：<br><input type="text" id="phone_number" size="30px"><br>
     <button type="button" id="confirm">確定</button>
 </form>
 </body>

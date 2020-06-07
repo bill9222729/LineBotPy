@@ -1,5 +1,6 @@
 import json
 
+import requests
 from flask import Flask, request, abort, redirect, render_template, jsonify
 
 from linebot import (
@@ -38,8 +39,13 @@ from models import lineNotify
 
 app = Flask(__name__)
 
+# client的
 line_bot_api = LineBotApi(Config.CHANNEL_ACCESS_TOKEN)
 handler = WebhookHandler(Config.CHANNEL_SECRET)
+
+# server的
+line_bot_api_server = LineBotApi(Config.CHANNEL_ACCESS_TOKEN_SERVER)
+handler_server = WebhookHandler(Config.CHANNEL_SECRET_SERVER)
 
 # 出大絕直接設定全域變數給付款連結
 PAY_WEB_URL = ''
@@ -165,11 +171,12 @@ def confirm():
         return '<h1>你的訂單已經完成付款,感謝您的訂購</h1>'
 
 
-# notify測試
+# notify連動按鈕
 @app.route('/notify')
 def notify():
     userId = request.args.get('userid')
-    return render_template(r"notify.html", userId=userId)
+    server_url = Config.SERVER_URI
+    return render_template(r"notify.html", userId=userId, server_url=server_url)
 
 
 # notify連動成功
@@ -185,6 +192,85 @@ def hookNotify():
     return 'OK'
 
 
+# notify發送公告頁面
+@app.route("/sendNotify")
+def sendNotifyPage():
+    return render_template(r"sendNotify.html")
+
+
+# notify發送公告
+@app.route("/sendNotify", methods=['POST'])
+def sendNotify():
+    # 取得來自前端的JSON資料
+    data = json.loads(request.form.get('data'))
+    query = User.query
+    for user in query:
+        if user.notifyToken != None:
+            lineNotify.lineNotifyMessage(user.notifyToken, data["message"])
+    print(data)
+    return 'OK'
+
+
+# server的callback
+@app.route("/server_callback", methods=['POST'])
+def callback_server():
+    # get X-Line-Signature header value
+    signature = request.headers['X-Line-Signature']
+
+    # get request body as text
+    body = request.get_data(as_text=True)
+    app.logger.info("Request body: " + body)
+
+    print(body)
+
+    # handle webhook body
+    try:
+        handler_server.handle(body, signature)
+    except InvalidSignatureError:
+        print("Invalid signature. Please check your channel access token/channel secret.")
+        abort(400)
+
+    return 'OK'
+
+
+@handler_server.add(MessageEvent, message=TextMessage)
+def handle_message_server(event):
+    # 從event裡面取得用戶id
+    user_id = event.source.user_id
+    # 從event裡面取得reply_token
+    reply_token = event.reply_token
+    # 從資料庫取得送出postback的用戶資料
+    query = User.query.filter_by(id=user_id).first()
+    # 從event裡面取得用戶傳來的訊息
+    message_text = str(event.message.text).lower()
+    # 建立一個購物車物件
+    cart = Cart(user_id=user_id)
+
+    # 綁webhook
+    if reply_token == '00000000000000000000000000000000':
+        return 'ok'
+
+    line_bot_api_server.reply_message(reply_token, TextSendMessage(text=message_text))
+
+
+@handler_server.add(PostbackEvent)
+def handler_postback_server(event):
+    # 把postback裡面的資料轉成字典
+    data = dict(parse_qsl(event.postback.data))
+    # 再取出action裡面的值
+    action = data.get('action')
+    # 從event裡面取得用戶id
+    user_id = event.source.user_id
+    # 從event裡面取得reply_token
+    reply_token = event.reply_token
+    # 從資料庫取得送出postback的用戶資料
+    query = User.query.filter_by(id=user_id).first()
+    if event.postback.data in ['功能列表']:
+        line_bot_api_server.reply_message(reply_token, messages=AllMessage.Menu())
+        return
+
+
+# client的callback
 @app.route("/callback", methods=['POST'])
 def callback():
     # get X-Line-Signature header value
@@ -323,21 +409,16 @@ def handle_message(event):
                                        AllMessage.hookNotify(user_id))
             return
 
-        # # 發送消息
-        # if message_text == "發送公告":
-        #     headers = {
-        #         "Authorization": "Bearer " + token,
-        #         "Content-Type": "application/x-www-form-urlencoded"
-        #     }
-        #
-        #     payload = {'message': msg}
-        #     r = requests.post("https://notify-api.line.me/api/notify", headers=headers, data=payload)
-        #     return r.status_code
-        #
-        #     # 修改為你要傳送的訊息內容
-        #     message = '測試測試不要慌'
-        #     # 修改為你的權杖內容
-        #     token = 'JtYMKOLaaMj9uOav9QPAqPu63XqAimlUc2Gu3cZM1mk'
+        # 發送消息
+        if message_text == "發送公告":
+            headers = {
+                "Authorization": "Bearer " + query.notifyToken,
+                "Content-Type": "application/x-www-form-urlencoded"
+            }
+
+            payload = {'message': "測試ㄛ~~"}
+            r = requests.post("https://notify-api.line.me/api/notify", headers=headers, data=payload)
+            return r.status_code
 
 
 @handler.add(PostbackEvent)

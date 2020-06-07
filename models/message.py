@@ -400,28 +400,6 @@ class AllMessage:
         })
         return message
 
-    # 訂閱Notify
-    @staticmethod
-    def hookNotify(userid):
-        message = FlexSendMessage(alt_text='訂閱我們', contents={
-            "type": "bubble",
-            "body": {
-                "type": "box",
-                "layout": "vertical",
-                "contents": [
-                    {
-                        "type": "button",
-                        "action": {
-                            "type": "uri",
-                            "label": "訂閱",
-                            "uri": "https://e593cda5c426.ngrok.io/notify?userid={userid}".format(userid=userid)
-                        }
-                    }
-                ]
-            }
-        })
-        return message
-
     # Server的功能列表
     @staticmethod
     def Menu():
@@ -437,6 +415,44 @@ class AllMessage:
                             "type": "uri",
                             "label": "發送公告",
                             "uri": "https://liff.line.me/1654314321-Qjxerl9v",
+                        }
+                    }
+                ]
+            }
+        })
+        return message
+
+    # Client的功能列表
+    @staticmethod
+    def Menu_client(userid):
+        message = FlexSendMessage(alt_text='功能列表', contents={
+            "type": "bubble",
+            "body": {
+                "type": "box",
+                "layout": "vertical",
+                "contents": [
+                    {
+                        "type": "button",
+                        "action": {
+                            "type": "uri",
+                            "label": "訂閱",
+                            "uri": "https://e593cda5c426.ngrok.io/notify?userid={userid}".format(userid=userid)
+                        }
+                    },
+                    {
+                        "type": "button",
+                        "action": {
+                            "type": "uri",
+                            "label": "會員中心",
+                            "uri": "https://liff.line.me/1654173476-GO8zxXn6"
+                        }
+                    },
+                    {
+                        "type": "button",
+                        "action": {
+                            "type": "uri",
+                            "label": "訂位",
+                            "uri": "https://liff.line.me/1654173476-emvXlo37"
                         }
                     }
                 ]

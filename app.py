@@ -395,30 +395,10 @@ def handle_message(event):
             else:
                 line_bot_api.reply_message(reply_token, TextSendMessage(text="抱歉,我們沒有賣{}".format(product_name)))
 
-        elif message_text == '待補':
-            line_bot_api.reply_message(reply_token, TextSendMessage(text='cart'))
-
-        if message_text == "會員中心":
-            line_bot_api.reply_message(event.reply_token,
-                                       TextSendMessage(text='https://liff.line.me/1654173476-GO8zxXn6'))
+        # 功能列表
+        if message_text == "功能列表":
+            line_bot_api.reply_message(reply_token, AllMessage.Menu_client(user_id))
             return
-
-        # 訂閱Notify
-        if message_text == "訂閱":
-            line_bot_api.reply_message(event.reply_token,
-                                       AllMessage.hookNotify(user_id))
-            return
-
-        # 發送消息
-        if message_text == "發送公告":
-            headers = {
-                "Authorization": "Bearer " + query.notifyToken,
-                "Content-Type": "application/x-www-form-urlencoded"
-            }
-
-            payload = {'message': "測試ㄛ~~"}
-            r = requests.post("https://notify-api.line.me/api/notify", headers=headers, data=payload)
-            return r.status_code
 
 
 @handler.add(PostbackEvent)

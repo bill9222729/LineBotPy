@@ -23,6 +23,10 @@ $(function () {
     });
 
     $("button").click(function () {
+        if($("#message").val() == ''){
+            window.alert("要寫點東西才能發送ㄛ!");
+            return
+        }
         var content = {
             data: JSON.stringify({
                 "message": $("#message").val(),

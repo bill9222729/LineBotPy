@@ -10,13 +10,15 @@
     <!--載入JQuery-->
     <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.0/jquery.min.js"></script>
     <!--載入sendNotify.js檔-->
-    <script src="{{ config.STATIC_URL }}/static/js/sendNotify.js?version=1.03"></script>
+    <script src="{{ config.STATIC_URL }}/static/js/sendNotify.js?version=1.04"></script>
     <link rel="stylesheet" href="{{ config.STATIC_URL }}/static/css/sendNotify.css?version=1.07">
 </head>
 <body>
+<form>
 <div>
     <textarea type="text" name="訊息內容" placeholder="輸入你要發送的公告" id="message"></textarea>
 </div>
     <button type="button" id="send">發送</button>
+</form>
 </body>
 </html>

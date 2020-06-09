@@ -459,3 +459,175 @@ class AllMessage:
             }
         })
         return message
+
+    # server 的確認訂單
+    @staticmethod
+    def confirmMessage(args_dic):
+        message = FlexSendMessage(
+            alt_text='確定此次訂位資訊嗎?\n姓名: ' + args_dic['name'] + '\n預約日期: ' + args_dic['date'] + '\n預約時間: ' +
+                     args_dic['time'] + "\n預約人數: " + args_dic['number'],
+            position='absolute',
+            contents={
+                "type": "bubble",
+                "body": {
+                    "type": "box",
+                    "layout": "vertical",
+                    "contents": [
+                        {
+                            "type": "text",
+                            "text": '確定此次訂位資訊嗎?\n姓名: ' + args_dic['name'] + '\n預約日期: ' + args_dic['date'] + '\n預約時間: ' +
+                                    args_dic['time'] + "\n預約人數: " + args_dic['number'],
+                            "margin": "md",
+                            "wrap": True
+                        },
+                        {
+                            "type": "spacer"
+                        }
+                    ]
+                },
+                "footer": {
+                    "type": "box",
+                    "layout": "horizontal",
+                    "spacing": "sm",
+                    "contents": [
+                        {
+                            "type": "button",
+                            "action": {
+                                "type": "postback",
+                                "label": "訂單正確",
+                                "data": 'yes ' + args_dic['name'] + " " + args_dic['date'] + " " + args_dic[
+                                    'time'] + " " + args_dic['number'] + " " + args_dic['userid']
+                            },
+                            "height": "sm"
+                        },
+                        {
+                            "type": "button",
+                            "action": {
+                                "type": "postback",
+                                "label": "取消訂單",
+                                "data": 'no ' + args_dic['name'] + " " + args_dic['date'] + " " + args_dic[
+                                    'time'] + " " + args_dic['number'] + " " + args_dic['userid']
+                            },
+                            "height": "sm"
+                        }
+                    ],
+                    "flex": 0
+                },
+                "styles": {
+                    "footer": {
+                        "separator": True
+                    }
+                }
+            }
+        )
+
+        return message
+
+    # client的接受訂單
+    # args_dic['name'] = order_data[1]
+    # args_dic['date'] = order_data[2]
+    # args_dic['time'] = order_data[3]
+    # args_dic['num_people'] = order_data[4]
+    @staticmethod
+    def Order_Message(args_dic):
+
+        message = FlexSendMessage(
+            alt_text='訂位成功!!',
+            position='absolute',
+            contents={
+                'type': 'bubble', 'direction': 'ltr',
+                'body': {
+                    "type": "box",
+                    "layout": "vertical",
+                    "contents": [
+                        {
+                            "type": "text",
+                            "text": "[訂位成功]",
+                            "size": "md",
+                            # "align": "center",
+                            "margin": "md",
+                            "color": "#3855FF"
+                        },
+                        {
+                            "type": "text",
+                            "text": "姓名 : " + args_dic['name'],
+                            "size": "md",
+                            # "align": "center",
+                            "margin": "md",
+                            "color": "#905c44"
+                        },
+                        {
+                            "type": "text",
+                            "text": "預定日期 : " + args_dic['date'],
+                            "size": "md",
+                            # "align": "center",
+                            "margin": "md",
+                            "color": "#905c44"
+                        },
+                        {
+                            "type": "text",
+                            "text": "預定時間 : " + args_dic['time'],
+                            "size": "md",
+                            # "align": "center",
+                            "margin": "md",
+                            "color": "#905c44"
+                        },
+                        {
+                            "type": "text",
+                            "text": "預約人數 : " + args_dic['num_people'],
+                            "size": "md",
+                            # "align": "center",
+                            "margin": "md",
+                            "color": "#905c44"
+                        },
+                        {
+                            "type": "text",
+                            "text": "預約順位 : 1",
+                            "size": "md",
+                            # "align": "center",
+                            "margin": "md",
+                            "color": "#905c44"
+                        },
+                        # {
+                        # "type": "text",
+                        # "text": "預約位置 : " + dict_doc['selected_seat'],
+                        # "size": "md",
+                        # "align": "center",
+                        # "margin": "md",
+                        # "color": "#905c44"
+                        # },
+                        {
+                            "type": "text",
+                            "text": "訂位編號 : 1591693360554",
+                            "size": "md",
+                            # "align": "center",
+                            "margin": "md",
+                            "color": "#905c44"
+                        }
+                    ]
+                },
+                'footer': {
+                    "type": "box",
+                    "layout": "vertical",
+                    "contents": [
+                        {
+                            "type": "spacer",
+                            "size": "xl"
+                        },
+                        {
+                            "type": "button",
+                            "style": "primary",
+                            "color": "#905c44",
+                            "action":
+                                {
+                                    "type": "message",
+                                    "label": "我要取消預約",
+                                    "text": '取消預約'
+                                }
+                        }
+                    ]
+                }
+            }
+        )
+
+        return message

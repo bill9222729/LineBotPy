@@ -13,6 +13,11 @@ body {
     background-color: #ACABAA;
 }
 
+table {
+    margin-left: auto;
+    margin-right: auto;
+}
+
 #form2 {
     font-size: 20%;
     text-align: center;
@@ -20,12 +25,114 @@ body {
 }
 
 #form1 {
-    font-size: x-large;
+    font-size: 20px;
     text-align: center;
-    background-color: #ACABAA;
+    background-color: #acabaa;
+}
+
+#name {
+    font-size: 20px;
+    width: 90%;
+    height: 40px;
+    background-color: #ffffff;
+    border-radius: 20px;
 }
 
 #user_name {
+    width: 90%;
+    height: 40px;
+    font-size: 20px;
+    border-style: none
+}
+
+#datepicker {
+    width: 60px;
+}
+
+/*以下時間選擇的部分*/
+#time_selector {
+    font-size: 20px;
+    width: 90%;
+    height: 70px;
+    background-color: #ffffff;
+    border-radius: 20px;
+}
+
+#date-picker {
+    width: 1px;
+    height: 1px;
+    border-style: none;
+}
+
+label {
+    display: block;
+    width: 100%;
+    height: 70px;
+    line-height: 70px;
+    background-color: transparent;
+}
+
+.form-control {
+    margin-top: -1em;
+    opacity: 0;
+}
+
+input[type="date"]::-webkit-calendar-picker-indicator {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    width: auto;
+    height: auto;
+    color: transparent;
+    background: transparent;
+}
+
+/*以下日期選擇的部分*/
+#date_selector {
+    font-size: 20px;
+    width: 90%;
+    height: 70px;
+    background-color: #ffffff;
+    border-radius: 20px;
+}
+
+/*以下是人數選擇的部分*/
+#people_selector {
+    font-size: 20px;
+    width: 90%;
+    height: 40px;
+    background-color: #ffffff;
+    border-radius: 20px;
+}
+
+#people_picker {
     width: 30%;
-    height: 50px;
+    height: 40px;
+    font-size: 20px;
+    border-style: none
+}
+
+.border {
+    border-right: 3px #FFD382 solid;
+}
+
+/*以下是連絡電話部分*/
+#phone_number {
+    text-align: center;
+}
+
+/*以下是確定按鈕*/
+button {
+    text-align: center;
+    height: 80px;
+    background-color: #4F3115;
+    color: #fff;
+    line-height: 80px;
+    font-size: 45px
+}
+
+#one{
+    background-color: #FFD382;
 }

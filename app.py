@@ -74,6 +74,10 @@ def sendjson():
     info['score'] = score
     return jsonify(info)
 
+# 意見回饋
+@app.route('/feedback')
+def feedback():
+    return render_template(r'feedback.html')
 
 # 訂位
 @app.route('/booking')
@@ -269,6 +273,25 @@ def handler_postback_server(event):
         line_bot_api_server.reply_message(reply_token, messages=AllMessage.Menu())
         return
 
+    # 如果接收訂單
+    if 'yes' in event.postback.data:
+        order_data = str(event.postback.data).split(" ")
+        args_dic = {}
+        args_dic['name'] = order_data[1]
+        args_dic['date'] = order_data[2]
+        args_dic['time'] = order_data[3]
+        args_dic['num_people'] = order_data[4]
+        print(event.postback.data)
+        print("123")
+        line_bot_api.push_message(user_id, AllMessage.Order_Message(args_dic))
+        return
+
+    # 如果拒絕訂單
+    if 'no' in event.postback.data:
+        user_id = str(event.postback.data).split(" ")[5]
+        line_bot_api.push_message(user_id, TextSendMessage(text="店家拒絕此次訂位!\n麻煩請於上方選時間處選其它時刻，感謝您~"))
+        return
+
 
 # client的callback
 @app.route("/callback", methods=['POST'])
@@ -401,6 +424,31 @@ def handle_message(event):
             return
 
 
+# 收到圖片訊息
+@handler.add(MessageEvent, message=ImageMessage)
+def handle_image_message(event):
+    # 想辦法抓出圖片網址裡的action
+    message_json = json.loads(str(event.message))
+    message_url = str(message_json['contentProvider']['originalContentUrl'])
+    message_url_args = message_url.split('?')[1].split('&')
+    args_dic = {}
+    for x in message_url_args:
+        args_dic[x.split("=")[0]] = x.split("=")[1]
+    # 從event裡面取得用戶id
+    user_id = event.source.user_id
+    # 從event裡面取得reply_token
+    reply_token = event.reply_token
+    # 從資料庫取得送出postback的用戶資料
+    query = User.query.filter_by(id=user_id).first()
+    args_dic['name'] = query.user_name_custom
+    args_dic['userid'] = user_id
+    if args_dic['action'] == 'booking':
+        line_bot_api_server.push_message('U47eb075cc6756bf9075f79c91a9925a0',
+                                         AllMessage.confirmMessage(args_dic))
+        print(args_dic)
+        return
+
+
 @handler.add(PostbackEvent)
 def handler_postback(event):
     # 把postback裡面的資料轉成字典
@@ -455,8 +503,6 @@ def handler_postback(event):
 
         # 透過uuid來建立訂單id,它可以幫我們建立一個獨一無二的值
         order_id = uuid.uuid4().hex
-        print('哈哈')
-        print(order_id)
         # 訂單總金額
         total = 0
         # 訂單內容物的陣列
@@ -489,9 +535,6 @@ def handler_postback(event):
         # 從info裡面擷取付款連結跟transactionid
         pay_web_url = info['paymentUrl']['web']
         transaction_id = info['transactionId']
-
-        # 把付款網址設定給全域變數
-        PAY_WEB_URL = pay_web_url
 
         # 產生訂單
         order = Orders(id=order_id,

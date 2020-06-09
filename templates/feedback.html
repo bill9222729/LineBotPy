@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>發送公告</title>
+    <!--讓畫面不要縮放-->
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+    <!--讓js檔案可以載入https的函式庫-->
+    <meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests">
+    <!--載入JQuery-->
+    <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.0/jquery.min.js"></script>
+    <!--下面這段可以自動更換JS跟CSS的版本號加速開發速度-->
+    <script>
+        var mydate = (+new Date()).toString();
+        $("head").append("<script src=\"{{ config.STATIC_URL }}/static/js/feedback.js?version=" + mydate + "\"><\/script>");
+        $("head").append("<link rel=\"stylesheet\" href=\"{{ config.STATIC_URL }}/static/css/feedback.css?version=" + mydate + "\">")
+    </script>
+</head>
+<body>
+<form>
+<div>
+    <textarea type="text" name="訊息內容" placeholder="您寶貴的已經是我們前進的動力，請輸入問題詳細的描述，以便我們能更好的解決問題。" id="message"></textarea>
+</div>
+    <button type="button" id="send">提交</button>
+</form>
+</body>
+</html>

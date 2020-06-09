@@ -14,23 +14,86 @@
     <!--以下讓我們使用強大的日期選擇函式庫flatpickr-->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
     <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+    <script src="https://npmcdn.com/flatpickr/dist/l10n/zh.js"></script>
     <!--載入booking.js檔-->
-    <script src="{{ config.STATIC_URL }}/static/js/booking.js?version=1.37"></script>
-    <link rel="stylesheet" href="{{ config.STATIC_URL }}/static/css/booking.css?version=1.14">
+    <!--下面這段可以自動更換JS跟CSS的版本號加速開發速度-->
+    <script>
+        var mydate = (+new Date()).toString();
+        $("head").append("<script src=\"{{ config.STATIC_URL }}/static/js/booking.js?version=" + mydate + "\"><\/script>");
+        $("head").append("<link rel=\"stylesheet\" href=\"{{ config.STATIC_URL }}/static/css/booking.css?version=" + mydate + "\">")
+    </script>
 </head>
+
 <body>
-<img src="{{ config.STATIC_URL }}/static/img/訂位資訊_top.jpg">
+<img src="{{ config.STATIC_URL }}/static/img/訂位資訊_top.jpg?vision=1.2">
+<br><br>
+<table id="name" border="0" class="forms">
+    <tr>
+        <th rowspan="2" width="30%">姓名：</th>
+        <th rowspan="2" width="40%"><input type="text" id="user_name"></th>
+        <th rowspan="2" width="30%">
+            <form>
+                <input type="radio" name="sexuality" value="man" checked="true"> 先生<br>
+                <input type="radio" name="sexuality" value="woman"> 小姐<br>
+            </form>
+        </th>
+    </tr>
+    <tr>
+    </tr>
+</table>
+<br>
+
+<table id="date_selector" border="0" class="forms">
+    <tr>
+        <th rowspan="2" width="30%">日期：</th>
+        <td rowspan="2" width="40%" align="left" >
+            <label id="book_date" for="date-picker" tabindex="0">好像出了點錯ㄛ</label>
+        </td>
+        <th rowspan="2" width="30%">
+            <input type="date" class="form-control" id="date-picker">
+        </th>
+    </tr>
+    <tr>
+    </tr>
+</table>
+
+<br>
+
+<table id="time_selector" border="0" class="forms">
+    <tr>
+        <th rowspan="2" width="30%">時間：</th>
+        <td rowspan="2" width="40%" align="left" >
+            <label id="book_time" for="time-picker" tabindex="0">好像出了點錯ㄛ</label>
+        </td>
+        <th rowspan="2" width="30%">
+            <input type="time" class="form-control" id="time-picker">
+        </th>
+    </tr>
+    <tr>
+    </tr>
+</table>
+
+<br>
+
+<table id="people_selector" border="0" class="forms">
+    <tr>
+        <th rowspan="2" width="30%" class="border">人數：</th>
+        <th rowspan="2" width="13%" class="border" id="one"  >1</th>
+        <th rowspan="2" width="13%" class="border" id="two"  >2</th>
+        <th rowspan="2" width="13%" class="border" id="three">3</th>
+        <th rowspan="2" width="13%" class="border" id="four" >4</th>
+        <th rowspan="2" width="18%"><input type="number" id="people_picker" placeholder="＠" oninput = "value=value.replace(/[^\d]/g,'')"></th>
+    </tr>
+    <tr>
+    </tr>
+</table>
+
+<br>
+
 <form id="form1">
-    姓名：<br><input type="text" id="user_name"><br>
-    <form id="form2">
-        <input type="radio" name="sexuality" value="man" checked="true"> 先生
-        <input type="radio" name="sexuality" value="woman"> 小姐<br>
-    </form>
-    日期：<br><input type="text" id="datepicker" size="30"><br>
-    時間：<br><input type="text" id="timepicker" size="30"><br>
-    人數：<br><input type="text" id="members" size="30" VALUE="1"><br>
-    連絡電話：<br><input type="text" id="phone_number" size="30px"><br>
-    <button type="button" id="confirm">確定</button>
+    連絡電話<br><input type="text" id="phone_number" size="30px"><br>
+    <button type="button" id="confirm">訂起來</button>
 </form>
+
 </body>
 </html>

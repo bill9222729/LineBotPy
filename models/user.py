@@ -41,6 +41,9 @@ class User(Base):
     # 將user與order做關聯
     orders = relationship('Orders', backref='user')
 
+    # 將user與booking做關聯
+    orders = relationship('Booking', backref='user')
+
     # 以下為示意
     
     # user.orders

@@ -30,10 +30,12 @@ $(function () {
         var content = {
             data: JSON.stringify({
                 "message": $("#message").val(),
+                "score":"None",
+                "magnitude":"None"
             })
         }
         $.ajax({
-            url: "/sendNotify",
+            url: "/sentimentAnalysis",
             type: "POST",
             data: content,
             success: function (msg) {

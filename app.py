@@ -1,3 +1,4 @@
+import datetime
 import json
 
 import requests
@@ -32,10 +33,16 @@ from models.cart import Cart
 from models.order import Orders
 # 匯入訂單內的商品模組
 from models.item import Items
+# 匯入訂位模組
+from models.booking import Booking
 # 匯入linepay模組
 from models.linepay import LinePay
 # 匯入Notify模組
 from models import lineNotify
+# 匯入情感分析API
+from models import SentimentAnalysis
+# 匯入時間模組
+from datetime import datetime
 
 app = Flask(__name__)
 
@@ -74,10 +81,44 @@ def sendjson():
     info['score'] = score
     return jsonify(info)
 
+
 # 意見回饋
 @app.route('/feedback')
 def feedback():
     return render_template(r'feedback.html')
+
+
+# 情感分析
+@app.route('/sentimentAnalysis', methods=['POST'])
+def sentimentAnalysis():
+    # 取得來自前端的JSON資料
+    data = json.loads(request.form.get('data'))
+    result = SentimentAnalysis.sentimentAnalysis(data['message'])
+    data['score'] = result['score']
+    data['magnitude'] = result['magnitude']
+    sentiment = "中立"
+    if (float(result['score']) > 0) and (float(result['score']) < 0.5):
+        sentiment = "正面"
+    elif (float(result['score']) < 0) and (float(result['score']) > -0.5):
+        sentiment = "負面"
+    elif (float(result['score']) > 0.5):
+        sentiment = "非常正面"
+    elif (float(result['score']) < -0.5):
+        sentiment = "非常負面"
+    line_bot_api_server.push_message('U47eb075cc6756bf9075f79c91a9925a0', TextSendMessage(text="[您有一則新回饋]\n回饋內容：\n" +
+                                                                                               data[
+                                                                                                   'message'] + "\n\n情緒分析結果：" +
+                                                                                               sentiment))
+    line_bot_api_server.push_message('U3f7562b0d0e0ffc22f3b82fa90af5a27', TextSendMessage(text="[您有一則新回饋]\n回饋內容：\n" +
+                                                                                               data[
+                                                                                                   'message'] + "\n\n情緒分析結果：" +
+                                                                                               sentiment))
+    line_bot_api_server.push_message('Ua64df883240f211c05bf798686b8217d', TextSendMessage(text="[您有一則新回饋]\n回饋內容：\n" +
+                                                                                               data[
+                                                                                                   'message'] + "\n\n情緒分析結果：" +
+                                                                                               sentiment))
+    return jsonify(data)
+
 
 # 訂位
 @app.route('/booking')
@@ -281,8 +322,8 @@ def handler_postback_server(event):
         args_dic['date'] = order_data[2]
         args_dic['time'] = order_data[3]
         args_dic['num_people'] = order_data[4]
+        user_id = str(event.postback.data).split(" ")[5]
         print(event.postback.data)
-        print("123")
         line_bot_api.push_message(user_id, AllMessage.Order_Message(args_dic))
         return
 
@@ -336,7 +377,7 @@ def handle_message(event):
     if query.is_signup:
         if check_cellphone(event.message.text):
             line_bot_api.push_message(user_id, TextSendMessage('恭喜註冊成功！'))
-            line_bot_api.link_rich_menu_to_user(user_id, richmenu_list.RichMenu_ID.richmenu_03)
+            line_bot_api.link_rich_menu_to_user(user_id, richmenu_list.RichMenu_ID.richmenu_04)
             query.is_member = True
             query.is_signup = False
             query.phone_number = event.message.text
@@ -427,6 +468,7 @@ def handle_message(event):
 # 收到圖片訊息
 @handler.add(MessageEvent, message=ImageMessage)
 def handle_image_message(event):
+    user_id = event.source.user_id
     # 想辦法抓出圖片網址裡的action
     message_json = json.loads(str(event.message))
     message_url = str(message_json['contentProvider']['originalContentUrl'])
@@ -443,6 +485,15 @@ def handle_image_message(event):
     args_dic['name'] = query.user_name_custom
     args_dic['userid'] = user_id
     if args_dic['action'] == 'booking':
+        booking_id = uuid.uuid4().hex
+        date_string = args_dic['date'] + " " + args_dic['time'] + ":01"
+        date_time = datetime.strptime(date_string, '%Y-%m-%d %H:%M:%S')
+        booking = Booking(id=booking_id,
+                          book_time=date_time,
+                          is_confirm=0,
+                          user_id=user_id)
+        db_session.add(booking)
+        db_session.commit()
         line_bot_api_server.push_message('U47eb075cc6756bf9075f79c91a9925a0',
                                          AllMessage.confirmMessage(args_dic))
         print(args_dic)

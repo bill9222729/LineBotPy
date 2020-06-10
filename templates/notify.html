@@ -10,19 +10,16 @@
     <meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests">
     <!--載入LIFF api-->
     <script src="https://static.line-scdn.net/liff/edge/2.1/sdk.js"></script>
+    <!--載入JQuery-->
+    <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.0/jquery.min.js"></script>
     <script>
-        function oAuth2() {
-            var URL = 'https://notify-bot.line.me/oauth/authorize?';
-            URL += 'response_type=code';
-            URL += '&client_id=SUMVZ46FKbFjW6FBYnIEX0';
-            URL += '&redirect_uri={{server_url}}/hookNotify?userid={{userId}}';
-            URL += '&scope=notify';
-            URL += '&state=NO_STATE';
-            window.location.href = URL;
-        }
+        var mydate = (+new Date()).toString();
+        $("head").append("<script src=\"{{ config.STATIC_URL }}/static/js/notify.js?version=" + mydate + "\"><\/script>");
+        $("head").append("<link rel=\"stylesheet\" href=\"{{ config.STATIC_URL }}/static/css/notify.css?version=" + mydate + "\">")
     </script>
 </head>
 <body>
-<button onclick="oAuth2();"> 連結到 LineNotify 按鈕</button>
+<img src="{{ config.STATIC_URL }}/static/img/notify連動教學.jpg">
+<button type="button" id="test">>開始連動<</button>
 </body>
 </html>

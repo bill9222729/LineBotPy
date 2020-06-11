@@ -317,20 +317,51 @@ def handler_postback_server(event):
     # 如果接收訂單
     if 'yes' in event.postback.data:
         order_data = str(event.postback.data).split(" ")
+        booking_info = Booking.query.filter_by(id=order_data[6]).first()
+        print(booking_info.id)
+        # 如果訂單已經被處理過了
+        if booking_info.is_confirm != 0:
+            line_bot_api_server.reply_message(reply_token, TextSendMessage(text="這張單子已經處理過了ㄛ！"))
+            return
+
+        # 建立參數字典
         args_dic = {}
         args_dic['name'] = order_data[1]
         args_dic['date'] = order_data[2]
         args_dic['time'] = order_data[3]
         args_dic['num_people'] = order_data[4]
-        user_id = str(event.postback.data).split(" ")[5]
+        user_id = order_data[5]
+
+        # 把訂單確認狀態改成1(接單)
+        booking_info.is_confirm = 1
+        db_session.commit()
+
         print(event.postback.data)
         line_bot_api.push_message(user_id, AllMessage.Order_Message(args_dic))
         return
 
     # 如果拒絕訂單
     if 'no' in event.postback.data:
+        # 先把參數拆開
+        order_data = str(event.postback.data).split(" ")
+        booking_info = Booking.query.filter_by(id=order_data[6]).first()
+
+        # 如果訂單已經被處理過了
+        if booking_info.is_confirm != 0:
+            line_bot_api_server.reply_message(reply_token, TextSendMessage(text="這張單子已經處理過了ㄛ！"))
+            return
+
+        # 把訂單確認狀態改成-1(拒絕)
+        booking_info.is_confirm = -1
+        db_session.commit()
+
         user_id = str(event.postback.data).split(" ")[5]
         line_bot_api.push_message(user_id, TextSendMessage(text="店家拒絕此次訂位!\n麻煩請於上方選時間處選其它時刻，感謝您~"))
+        return
+
+    if event.postback.data in ['訂單管理']:
+        print('訂單管理')
+        line_bot_api_server.reply_message(reply_token, messages=Booking.list_all())
         return
 
 
@@ -468,6 +499,7 @@ def handle_message(event):
 # 收到圖片訊息
 @handler.add(MessageEvent, message=ImageMessage)
 def handle_image_message(event):
+    # 從event裡面取得用戶id
     user_id = event.source.user_id
     # 想辦法抓出圖片網址裡的action
     message_json = json.loads(str(event.message))
@@ -476,16 +508,18 @@ def handle_image_message(event):
     args_dic = {}
     for x in message_url_args:
         args_dic[x.split("=")[0]] = x.split("=")[1]
-    # 從event裡面取得用戶id
-    user_id = event.source.user_id
     # 從event裡面取得reply_token
     reply_token = event.reply_token
     # 從資料庫取得送出postback的用戶資料
     query = User.query.filter_by(id=user_id).first()
     args_dic['name'] = query.user_name_custom
+    args_dic['phone_number'] = query.phone_number
     args_dic['userid'] = user_id
     if args_dic['action'] == 'booking':
+        # 用uuid創一個訂單編號
         booking_id = uuid.uuid4().hex
+        # 存入字典
+        args_dic['id'] = booking_id
         date_string = args_dic['date'] + " " + args_dic['time'] + ":01"
         date_time = datetime.strptime(date_string, '%Y-%m-%d %H:%M:%S')
         booking = Booking(id=booking_id,

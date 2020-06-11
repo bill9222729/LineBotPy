@@ -18,4 +18,5 @@ class RichMenu_ID:
 
 class RichMenu_ID_Server:
     richmenu_01 = 'richmenu-c5b859d3f7fa081399398584e1c94357'  # 功能列表
-    #richmenu-1461da339dc0332083c17fd944678eae
+    richmenu_02 = 'richmenu-0fac4e42603bc20057ecb1e243506f2d'  # 最新的功能選單
+    # richmenu-1461da339dc0332083c17fd944678eae

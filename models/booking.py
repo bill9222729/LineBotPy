@@ -4,7 +4,6 @@ from sqlalchemy.orm import relationship
 from database import Base, db_session
 import datetime
 
-
 class Booking(Base):
     __tablename__ = 'booking'
 
@@ -26,6 +25,8 @@ class Booking(Base):
         for book in booklist:
             if book.is_confirm != 0:
                 continue
+
+            print(type(book.book_time))
             bubble = BubbleContainer(
                 body=BoxComponent(
                     layout='vertical',

@@ -2,6 +2,7 @@ import datetime
 import json
 
 import requests
+from apscheduler.schedulers.background import BackgroundScheduler
 from flask import Flask, request, abort, redirect, render_template, jsonify
 
 from linebot import (
@@ -16,6 +17,7 @@ from urllib.parse import parse_qsl
 import uuid
 
 # 匯入richmenu清單
+from models.scheduler import check_database
 from rich_menu import richmenu_list
 # 匯入正規則表達
 import re
@@ -323,6 +325,8 @@ def handler_postback_server(event):
         if booking_info.is_confirm != 0:
             line_bot_api_server.reply_message(reply_token, TextSendMessage(text="這張單子已經處理過了ㄛ！"))
             return
+        # 給老闆一點回饋
+        line_bot_api_server.reply_message(reply_token, TextSendMessage(text="成功接受訂單"))
 
         # 建立參數字典
         args_dic = {}
@@ -350,6 +354,8 @@ def handler_postback_server(event):
         if booking_info.is_confirm != 0:
             line_bot_api_server.reply_message(reply_token, TextSendMessage(text="這張單子已經處理過了ㄛ！"))
             return
+        # 給老闆一點回饋
+        line_bot_api_server.reply_message(reply_token, TextSendMessage(text="已拒絕訂單"))
 
         # 把訂單確認狀態改成-1(拒絕)
         booking_info.is_confirm = -1
@@ -495,6 +501,12 @@ def handle_message(event):
             line_bot_api.reply_message(reply_token, AllMessage.Menu_client(user_id))
             return
 
+        # 變成管理員的通關密碼
+        if message_text in ["霹靂卡霹靂拉拉波波莉娜貝貝魯多","AI戰神"]:
+            query.is_manager = True
+            line_bot_api.reply_message(reply_token, TextSendMessage(text="恭喜你成為管理員了"))
+            return
+
 
 # 收到圖片訊息
 @handler.add(MessageEvent, message=ImageMessage)
@@ -549,6 +561,7 @@ def handler_postback(event):
     # 從資料庫取得送出postback的用戶資料
     query = User.query.filter_by(id=user_id).first()
     print(event.postback.data)
+    # 點擊加入會員
     if event.postback.data in ['join_us', '加入會員']:
         # 資料庫該使用者狀態改為註冊中
         # Updata data
@@ -557,7 +570,8 @@ def handler_postback(event):
         db_session.commit()
         line_bot_api.link_rich_menu_to_user(user_id, richmenu_list.RichMenu_ID.richmenu_02)
         line_bot_api.push_message(user_id, AllMessage.sign_cellphone())
-    elif event.postback.data == 'exit':
+    # 點擊取消輸入之類的
+    elif event.postback.data in ['exit']:
         query.is_signup = False
         query.edit_user_name = False
         query.edit_home_address = False
@@ -566,16 +580,20 @@ def handler_postback(event):
         if not query.is_member:
             line_bot_api.link_rich_menu_to_user(user_id, richmenu_list.RichMenu_ID.richmenu_01)
         line_bot_api.push_message(user_id, TextSendMessage(text='好的，歡迎您再來找我聊聊天喔！'))
-    elif event.postback.data == '會員中心':
+    # 點擊會員中心
+    elif event.postback.data in ['會員中心']:
         line_bot_api.push_message(user_id, TextSendMessage(text='這是專屬於你的會員中心'))
         line_bot_api.push_message(user_id, AllMessage.member_center(query))
-    elif event.postback.data in ['當日外帶', 'add']:
+    # 觸發點餐相關事件
+    elif event.postback.data in ['當日外帶', 'add', '點餐']:
         line_bot_api.push_message(user_id, Products.list_all())
+    # 觸發確認訂單事件
     elif event.postback.data in ['待補', '確認訂單']:
         if cart.bucket():
             line_bot_api.reply_message(reply_token, cart.display())
         else:
             line_bot_api.reply_message(reply_token, TextSendMessage(text='你的購物車目前沒東西喔'))
+    # 觸發清空購物車事件
     elif event.postback.data in ['Empty Cart']:
         cart.reset()
         line_bot_api.reply_message(reply_token, TextSendMessage(text="你的購物車已經被清空了"))
@@ -727,4 +745,7 @@ def check_cellphone(number):
 
 if __name__ == "__main__":
     init_products()
+    scheduler = BackgroundScheduler()
+    scheduler.add_job(check_database, 'interval', seconds=60)
+    scheduler.start()
     app.run()

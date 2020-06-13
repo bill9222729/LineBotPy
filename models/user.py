@@ -37,6 +37,8 @@ class User(Base):
     edit_home_address = Column(Boolean, nullable=False, default=False)
     # 是否正在自訂公司地址
     edit_company_address = Column(Boolean, nullable=False, default=False)
+    # # 是否為管理者
+    # is_manager = Column(Boolean, nullable=False, default=False)
 
     # 將user與order做關聯
     orders = relationship('Orders', backref='user')

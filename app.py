@@ -86,6 +86,12 @@ def sendjson():
     return jsonify(info)
 
 
+# 開啟QRCodeScanner
+@app.route('/qrcode')
+def scanner():
+    return render_template("qrcode.html")
+
+
 # 意見回饋
 @app.route('/feedback')
 def feedback():
@@ -558,6 +564,10 @@ def handle_image_message(event):
         print(args_dic)
         return
 
+    if args_dic['action'] == 'order':
+        line_bot_api.reply_message(reply_token, TextSendMessage(text="好的，" + args_dic["table"] + "是嗎?\n以下是我們的菜單！"))
+        line_bot_api.push_message(user_id, Products.list_all())
+
 
 @handler.add(PostbackEvent)
 def handler_postback(event):
@@ -600,7 +610,6 @@ def handler_postback(event):
             icon_url='https://i.imgur.com/S7SHmup.png'
         )))
         line_bot_api.push_message(user_id, AllMessage.member_center(query))
-        line_bot_api.reply_message(reply_token, SendMessage())
     # 觸發點餐相關事件
     elif event.postback.data in ['當日外帶', 'add', '點餐']:
         # 先跳出選擇內用外帶
@@ -624,7 +633,26 @@ def handler_postback(event):
                                                                             )
                                                                         ]
                                                                     )))
-        line_bot_api.push_message(user_id, Products.list_all())
+    # 外帶事件
+    elif event.postback.data in ['out']:
+        line_bot_api.reply_message(reply_token, Products.list_all())
+    # 內用事件
+    elif event.postback.data in ['here']:
+        line_bot_api.reply_message(reply_token, TemplateSendMessage(alt_text="請掃描桌上的QRCODE",
+                                                                    sender=Sender(
+                                                                        name='服務員結衣',
+                                                                        icon_url='https://i.imgur.com/S7SHmup.png'
+                                                                    ),
+                                                                    template=ButtonsTemplate(
+                                                                        text='請掃描桌上的QRCode點餐',
+                                                                        actions=[
+                                                                            URIAction(
+                                                                                type='uri',
+                                                                                label='點我掃描',
+                                                                                uri="https://liff.line.me/1654280234-Wabazm3B"
+                                                                            )
+                                                                        ]
+                                                                    )))
     # 觸發確認訂單事件
     elif event.postback.data in ['待補', '確認訂單']:
         if cart.bucket():

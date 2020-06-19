@@ -1,4 +1,20 @@
 $(function () {
+    //初始化LIFF
+    var initializeLiff = function initializeLiff(myLiffId) {
+        liff
+            .init({
+                liffId: myLiffId
+            })
+            .then(() => {
+                // start to use LIFF's api
+                getUserProfile();
+
+            })
+            .catch((err) => {
+            });
+    }
+    //填入LIFF的ID
+    initializeLiff('1654173476-vql6VGkn');
 
     function mobile_send_btn() {
         $("button").css({
@@ -23,6 +39,7 @@ $(function () {
     });
 
     $("button").click(function () {
+        window.alert("觸發")
         if($("#message").val() == ''){
             window.alert("要寫點東西才能發送ㄛ!");
             return
@@ -39,7 +56,8 @@ $(function () {
             type: "POST",
             data: content,
             success: function (msg) {
-                window.alert("發送成功")
+                window.alert("感謝您ㄉ回饋")
+                liff.closeWindow();
             }
         }).catch(function (error) {
             window.alert("發送失敗")

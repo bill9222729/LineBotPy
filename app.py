@@ -11,12 +11,14 @@ from linebot import (
 from linebot.exceptions import (
     InvalidSignatureError
 )
-from linebot.models import *
+from library.linebot.models import *
 
 from urllib.parse import parse_qsl
 import uuid
 
 # 匯入richmenu清單
+from library.linebot.models.send_messages import Sender
+
 from models.scheduler import check_database
 from rich_menu import richmenu_list
 # 匯入正規則表達
@@ -109,15 +111,19 @@ def sentimentAnalysis():
         sentiment = "非常負面"
     line_bot_api_server.push_message('U47eb075cc6756bf9075f79c91a9925a0', TextSendMessage(text="[您有一則新回饋]\n回饋內容：\n" +
                                                                                                data[
-                                                                                                   'message'] + "\n\n情緒分析結果：" +
+                                                                                                   'message'] + "\n\nAI情緒分析結果：" +
                                                                                                sentiment))
     line_bot_api_server.push_message('U3f7562b0d0e0ffc22f3b82fa90af5a27', TextSendMessage(text="[您有一則新回饋]\n回饋內容：\n" +
                                                                                                data[
-                                                                                                   'message'] + "\n\n情緒分析結果：" +
+                                                                                                   'message'] + "\n\nAI情緒分析結果：" +
                                                                                                sentiment))
     line_bot_api_server.push_message('Ua64df883240f211c05bf798686b8217d', TextSendMessage(text="[您有一則新回饋]\n回饋內容：\n" +
                                                                                                data[
-                                                                                                   'message'] + "\n\n情緒分析結果：" +
+                                                                                                   'message'] + "\n\nAI情緒分析結果：" +
+                                                                                               sentiment))
+    line_bot_api_server.push_message('Uf172bde17bf332ad7060a417db99f1c2', TextSendMessage(text="[您有一則新回饋]\n回饋內容：\n" +
+                                                                                               data[
+                                                                                                   'message'] + "\n\nAI情緒分析結果：" +
                                                                                                sentiment))
     return jsonify(data)
 
@@ -253,7 +259,7 @@ def sendNotify():
     query = User.query
     for user in query:
         if user.notifyToken != None:
-            lineNotify.lineNotifyMessage(user.notifyToken, data["message"])
+            lineNotify.lineNotifyMessage(user.notifyToken, "\n  " + data["message"])
     print(data)
     return 'OK'
 
@@ -502,7 +508,7 @@ def handle_message(event):
             return
 
         # 變成管理員的通關密碼
-        if message_text in ["霹靂卡霹靂拉拉波波莉娜貝貝魯多","AI戰神"]:
+        if message_text in ["霹靂卡霹靂拉拉波波莉娜貝貝魯多", "AI戰神"]:
             query.is_manager = True
             line_bot_api.reply_message(reply_token, TextSendMessage(text="恭喜你成為管理員了"))
             return
@@ -528,8 +534,12 @@ def handle_image_message(event):
     args_dic['phone_number'] = query.phone_number
     args_dic['userid'] = user_id
     if args_dic['action'] == 'booking':
-        # 用uuid創一個訂單編號
-        booking_id = uuid.uuid4().hex
+        # 老師說的對，先不要用UUID先用日期檔老師一下
+        # 等之後再修回來
+        # # 用uuid創一個訂單編號
+        # booking_id = uuid.uuid4().hex
+        booking_id = str(datetime.today().strftime('%Y%m%d%H%M%S'))
+
         # 存入字典
         args_dic['id'] = booking_id
         date_string = args_dic['date'] + " " + args_dic['time'] + ":01"
@@ -537,10 +547,13 @@ def handle_image_message(event):
         booking = Booking(id=booking_id,
                           book_time=date_time,
                           is_confirm=0,
-                          user_id=user_id)
+                          user_id=user_id,
+                          people_num=args_dic['number'])
         db_session.add(booking)
         db_session.commit()
         line_bot_api_server.push_message('U47eb075cc6756bf9075f79c91a9925a0',
+                                         AllMessage.confirmMessage(args_dic))
+        line_bot_api_server.push_message('Uf172bde17bf332ad7060a417db99f1c2',
                                          AllMessage.confirmMessage(args_dic))
         print(args_dic)
         return
@@ -582,10 +595,35 @@ def handler_postback(event):
         line_bot_api.push_message(user_id, TextSendMessage(text='好的，歡迎您再來找我聊聊天喔！'))
     # 點擊會員中心
     elif event.postback.data in ['會員中心']:
-        line_bot_api.push_message(user_id, TextSendMessage(text='這是專屬於你的會員中心'))
+        line_bot_api.reply_message(reply_token, TextSendMessage(text='這是專屬於你的會員中心', sender=Sender(
+            name='會員中心管理員結衣',
+            icon_url='https://i.imgur.com/S7SHmup.png'
+        )))
         line_bot_api.push_message(user_id, AllMessage.member_center(query))
+        line_bot_api.reply_message(reply_token, SendMessage())
     # 觸發點餐相關事件
     elif event.postback.data in ['當日外帶', 'add', '點餐']:
+        # 先跳出選擇內用外帶
+        line_bot_api.reply_message(reply_token, TemplateSendMessage(alt_text="請問您要內用還是外帶呢？",
+                                                                    sender=Sender(
+                                                                        name='服務員結衣',
+                                                                        icon_url='https://i.imgur.com/S7SHmup.png'
+                                                                    ),
+                                                                    template=ConfirmTemplate(
+                                                                        text="請問您要內用還是外帶呢？",
+                                                                        actions=[
+                                                                            PostbackAction(
+                                                                                label="內用",
+                                                                                text="內用",
+                                                                                data="here"
+                                                                            ),
+                                                                            PostbackAction(
+                                                                                label="外帶",
+                                                                                text="外帶",
+                                                                                data="out"
+                                                                            )
+                                                                        ]
+                                                                    )))
         line_bot_api.push_message(user_id, Products.list_all())
     # 觸發確認訂單事件
     elif event.postback.data in ['待補', '確認訂單']:
@@ -630,7 +668,7 @@ def handler_postback(event):
         line_pay = LinePay()
         # 傳送這些資訊過去他會回我們一個json
         # 自己試試看把info印出來或是用postman看看裡面的結構
-        info = line_pay.pay(product_name='linebotClient',
+        info = line_pay.pay(product_name='OrderBot 點吧',
                             amount=total,
                             order_id=order_id,
                             product_image_url=Config.STORE_IMAGE_URL)
@@ -708,27 +746,27 @@ def init_products():
         init_data = [Products(name='芒果炒雞柳',
                               product_image_url='https://i.imgur.com/SBDmHrJ.jpg',
                               price=300,
-                              description='還沒掰好'),
+                              description='炒雞柳好吃!'),
                      Products(name='東坡肉',
                               product_image_url='https://i.imgur.com/JCBXVEq.jpg',
                               price=310,
-                              description='還沒掰好'),
+                              description='東坡肉好吃！'),
                      Products(name='嫩煎牛排',
                               product_image_url='https://i.imgur.com/gGhxvM6.jpg',
                               price=320,
-                              description='還沒掰好'),
+                              description='牛排好吃！'),
                      Products(name='蒜泥白玉蒸蝦',
                               product_image_url='https://i.imgur.com/MhAb8nA.jpg',
                               price=330,
-                              description='還沒掰好'),
+                              description='蝦子好吃！'),
                      Products(name='橙汁魚排',
-                              product_image_url='https://i.imgur.com/ZSsqBqW.jpg',
+                              product_image_url='https://i.imgur.com/t1svMMN.png',
                               price=290,
-                              description='還沒掰好'),
+                              description='魚排好吃！'),
                      Products(name='蒜苗炒松阪牛',
                               product_image_url='https://i.imgur.com/JZssJkM.jpg',
                               price=340,
-                              description='還沒掰好')
+                              description='松阪牛好吃！')
                      ]
         db_session.bulk_save_objects(init_data)
         db_session.commit()

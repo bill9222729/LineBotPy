@@ -18,12 +18,17 @@ class Config:
     # LINE_PAY_ID = os.environ['LINE_PAY_ID']
     # LINE_PAY_SECRET = os.environ['LINE_PAY_SECRET']
 
+    # 又玄的
     LINE_PAY_ID = '1654151870'
     LINE_PAY_SECRET = 'cdf067f352c0a9c097abea21e0279cb2'
 
+    # 芸尾的
+    # LINE_PAY_ID = '1654323497'
+    # LINE_PAY_SECRET = '4f747718668059e85f35c3667510081f'
+
     LIFF_URL = 'https://liff.line.me/1654173476-1re659nb'
 
-    STORE_IMAGE_URL = 'https://i.imgur.com/igoTNFV.png'
+    STORE_IMAGE_URL = 'https://i.imgur.com/YiR7sqB.jpg'
 
     # 伺服器位置
     SERVER_URI = 'https://8220ca19e1db.ngrok.io'

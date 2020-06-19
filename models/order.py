@@ -59,7 +59,7 @@ class Orders(Base):
                                   weight='bold',
                                   color='#1DB446',
                                   size='sm'),
-                    TextComponent(text='瑋瑋快易點',
+                    TextComponent(text='OrderBot 點吧',
                                   weight='bold',
                                   size='xxl',
                                   margin='md'),

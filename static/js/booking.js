@@ -141,7 +141,8 @@ $(document).ready(function () {
                     'https://i.imgur.com/M626TFC.png?date=' + full_date + "&time=" + full_time + "&number=" + people_number + "&action=booking",
                 previewImageUrl: 'https://i.imgur.com/M626TFC.png?date=' + full_date + "&time=" + full_time + "&number=" + people_number + "&action=booking",
             }]).then(function () {
-                window.alert('Message sent');
+                window.alert('訂單已成功送出\n請等待回覆');
+                liff.closeWindow();
             }).catch(function (error) {
                 window.alert('Error sending message: ' + error);
             });

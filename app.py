@@ -346,7 +346,11 @@ def handler_postback_server(event):
         args_dic['date'] = order_data[2]
         args_dic['time'] = order_data[3]
         args_dic['num_people'] = order_data[4]
+        args_dic['phone_number'] = query.phone_number
+        args_dic['id'] = booking_info.id
         user_id = order_data[5]
+
+        print(args_dic)
 
         # 把訂單確認狀態改成1(接單)
         booking_info.is_confirm = 1
@@ -379,7 +383,7 @@ def handler_postback_server(event):
 
     if event.postback.data in ['訂單管理']:
         print('訂單管理')
-        line_bot_api_server.reply_message(reply_token, messages=Booking.list_all())
+        line_bot_api_server.reply_message(reply_token, messages=Booking.list_all_manager())
         return
 
 
@@ -519,10 +523,25 @@ def handle_message(event):
             line_bot_api.reply_message(reply_token, TextSendMessage(text="恭喜你成為管理員了"))
             return
 
+        # 其他
+        # 使用客青雲的API取得回應內容
+        r = requests.get("http://api.qingyunke.com/api.php?key=free&appid=0&msg=" + message_text)
+        msg = eval(r.text)['content']
+        # 使用繁化姬來簡轉繁
+        rr = requests.get("https://api.zhconvert.org/convert?text={msg}&converter=Taiwan".format(msg=msg))
+        msg_Taiwan = json.loads(rr.text)
+        # 回應使用者
+        line_bot_api.reply_message(reply_token, TextSendMessage(text=msg_Taiwan['data']['text']))
+
+# 收到語音訊息
+@handler.add(MessageEvent, message=AudioMessage)
+def handle_audio_message(event):
+    print(event)
 
 # 收到圖片訊息
 @handler.add(MessageEvent, message=ImageMessage)
 def handle_image_message(event):
+    print(event)
     # 從event裡面取得用戶id
     user_id = event.source.user_id
     # 想辦法抓出圖片網址裡的action
@@ -560,6 +579,8 @@ def handle_image_message(event):
         line_bot_api_server.push_message('U47eb075cc6756bf9075f79c91a9925a0',
                                          AllMessage.confirmMessage(args_dic))
         line_bot_api_server.push_message('Uf172bde17bf332ad7060a417db99f1c2',
+                                         AllMessage.confirmMessage(args_dic)),
+        line_bot_api_server.push_message('U3f7562b0d0e0ffc22f3b82fa90af5a27',
                                          AllMessage.confirmMessage(args_dic))
         print(args_dic)
         return
@@ -730,6 +751,21 @@ def handler_postback(event):
                                   url=pay_web_url))
                 ]))
         line_bot_api.reply_message(reply_token, message)
+
+    # 訂單管理
+    elif event.postback.data in ['訂單管理']:
+        line_bot_api.reply_message(reply_token, Booking.list_all_user(user_id))
+
+    # 取消訂單
+    elif '取消訂位' in event.postback.data:
+        line_bot_api.reply_message(reply_token, TextSendMessage(text="您的訂單已取消",
+                                                                sender=Sender(
+                                                                    name='會員中心管理員結衣',
+                                                                    icon_url='https://i.imgur.com/S7SHmup.png'
+                                                                )))
+        book_id = str(event.postback.data)[4:]
+        db_session.query(Booking).filter_by(id=book_id).first().is_confirm = -2
+        db_session.commit()
 
     return 'OK'
 

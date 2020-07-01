@@ -18,7 +18,6 @@ def check_database():
     booking_list = db_session.query(Booking).all()
     for x in booking_list:
         # 如果日期等於今天日期
-        lineNotifyMessage(x.user_id, "訂位囉")
         booking_date = str(x.book_time).split(" ")[0]
         booking_time = str(x.book_time).split(" ")[1]
         booking = datetime(int(booking_date.split("-")[0]),
@@ -28,7 +27,7 @@ def check_database():
                            int(booking_time.split(":")[1]),
                            int(booking_time.split(":")[2]))
         # 如果日期差距是正的才處理
-        if (booking - today).days >= 0:
+        if (booking - today).days == 1:
             query = User.query.filter_by(id=x.user_id).first()
             # 距離訂位時間十分鐘的時候提醒客人來吃飯
             if int((booking - today).seconds / 60) == 10:

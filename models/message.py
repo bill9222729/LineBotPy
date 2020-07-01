@@ -679,100 +679,193 @@ class AllMessage:
     def Order_Message(args_dic):
         message = FlexSendMessage(
             alt_text='訂位成功!!',
-            position='absolute',
             contents={
-                'type': 'bubble', 'direction': 'ltr',
-                'body': {
+                "type": "bubble",
+                "body": {
                     "type": "box",
                     "layout": "vertical",
                     "contents": [
                         {
                             "type": "text",
-                            "text": "[訂位成功]",
-                            "size": "md",
-                            # "align": "center",
-                            "margin": "md",
-                            "color": "#3855FF"
+                            "text": "訂位成功",
+                            "weight": "bold",
+                            "color": "#1DB446",
+                            "size": "sm"
                         },
                         {
                             "type": "text",
-                            "text": "姓名 : " + args_dic['name'],
-                            "size": "md",
-                            # "align": "center",
-                            "margin": "md",
-                            "color": "#905c44"
+                            "text": "OrderBot-點吧",
+                            "weight": "bold",
+                            "size": "xxl",
+                            "margin": "md"
                         },
                         {
                             "type": "text",
-                            "text": "預定日期 : " + args_dic['date'],
-                            "size": "md",
-                            # "align": "center",
-                            "margin": "md",
-                            "color": "#905c44"
+                            "text": "260宜蘭縣宜蘭市公園路347號",
+                            "size": "xs",
+                            "color": "#aaaaaa",
+                            "wrap": True
                         },
                         {
-                            "type": "text",
-                            "text": "預定時間 : " + args_dic['time'],
-                            "size": "md",
-                            # "align": "center",
-                            "margin": "md",
-                            "color": "#905c44"
+                            "type": "separator",
+                            "margin": "xxl"
                         },
                         {
-                            "type": "text",
-                            "text": "預約人數 : " + args_dic['num_people'],
-                            "size": "md",
-                            # "align": "center",
-                            "margin": "md",
-                            "color": "#905c44"
+                            "type": "box",
+                            "layout": "vertical",
+                            "margin": "xxl",
+                            "spacing": "sm",
+                            "contents": [
+                                {
+                                    "type": "box",
+                                    "layout": "horizontal",
+                                    "contents": [
+                                        {
+                                            "type": "text",
+                                            "text": "名稱：",
+                                            "size": "sm",
+                                            "color": "#555555",
+                                            "flex": 0
+                                        },
+                                        {
+                                            "type": "text",
+                                            "text": args_dic['name'],
+                                            "size": "sm",
+                                            "color": "#111111",
+                                            "align": "end"
+                                        }
+                                    ]
+                                },
+                                {
+                                    "type": "box",
+                                    "layout": "horizontal",
+                                    "contents": [
+                                        {
+                                            "type": "text",
+                                            "text": "預約日期：",
+                                            "size": "sm",
+                                            "color": "#555555",
+                                            "flex": 0
+                                        },
+                                        {
+                                            "type": "text",
+                                            "text": args_dic['date'],
+                                            "size": "sm",
+                                            "color": "#111111",
+                                            "align": "end"
+                                        }
+                                    ]
+                                },
+                                {
+                                    "type": "box",
+                                    "layout": "horizontal",
+                                    "contents": [
+                                        {
+                                            "type": "text",
+                                            "text": "預約時間：",
+                                            "size": "sm",
+                                            "color": "#555555",
+                                            "flex": 0
+                                        },
+                                        {
+                                            "type": "text",
+                                            "text": args_dic['time'],
+                                            "size": "sm",
+                                            "color": "#111111",
+                                            "align": "end"
+                                        }
+                                    ]
+                                },
+                                {
+                                    "type": "box",
+                                    "layout": "horizontal",
+                                    "contents": [
+                                        {
+                                            "type": "text",
+                                            "text": "預約人數：",
+                                            "size": "sm",
+                                            "color": "#555555",
+                                            "flex": 0
+                                        },
+                                        {
+                                            "type": "text",
+                                            "text": args_dic['num_people'],
+                                            "size": "sm",
+                                            "color": "#111111",
+                                            "align": "end"
+                                        }
+                                    ]
+                                },
+                                {
+                                    "type": "box",
+                                    "layout": "horizontal",
+                                    "contents": [
+                                        {
+                                            "type": "text",
+                                            "text": "連絡電話：",
+                                            "size": "sm",
+                                            "color": "#555555",
+                                            "flex": 0
+                                        },
+                                        {
+                                            "type": "text",
+                                            "text": args_dic['phone_number'],
+                                            "size": "sm",
+                                            "color": "#111111",
+                                            "align": "end"
+                                        }
+                                    ]
+                                }
+                            ]
                         },
                         {
-                            "type": "text",
-                            "text": "預約順位 : 1",
-                            "size": "md",
-                            # "align": "center",
-                            "margin": "md",
-                            "color": "#905c44"
+                            "type": "separator",
+                            "margin": "xxl"
                         },
-                        # {
-                        # "type": "text",
-                        # "text": "預約位置 : " + dict_doc['selected_seat'],
-                        # "size": "md",
-                        # "align": "center",
-                        # "margin": "md",
-                        # "color": "#905c44"
-                        # },
                         {
-                            "type": "text",
-                            "text": "訂位編號 : 1591693360554",
-                            "size": "md",
-                            # "align": "center",
+                            "type": "box",
+                            "layout": "horizontal",
                             "margin": "md",
-                            "color": "#905c44"
+                            "contents": [
+                                {
+                                    "type": "text",
+                                    "text": "訂位編號：",
+                                    "size": "xs",
+                                    "color": "#aaaaaa",
+                                    "flex": 0
+                                },
+                                {
+                                    "type": "text",
+                                    "text": "#"+args_dic['id'],
+                                    "color": "#aaaaaa",
+                                    "size": "xs",
+                                    "align": "end"
+                                }
+                            ]
                         }
                     ]
                 },
-                'footer': {
+                "footer": {
                     "type": "box",
                     "layout": "vertical",
                     "contents": [
                         {
-                            "type": "spacer",
-                            "size": "xl"
-                        },
-                        {
                             "type": "button",
-                            "style": "primary",
-                            "color": "#905c44",
-                            "action":
-                                {
-                                    "type": "message",
-                                    "label": "我要取消預約",
-                                    "text": '取消預約'
-                                }
+                            "action": {
+                                "type": "postback",
+                                "label": "取消訂位",
+                                "data": ""+args_dic['id'],
+                                "displayText": "我要取消訂單"
+                            }
                         }
                     ]
+                },
+                "styles": {
+                    "footer": {
+                        "separator": True
+                    }
                 }
+
             }
         )
 

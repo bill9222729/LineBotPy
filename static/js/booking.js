@@ -1,4 +1,8 @@
 $(document).ready(function () {
+    $("#hahaha").append("<p>\n" +
+        "    Color:\n" +
+        "    <input data-jscolor=\"\" value=\"2CAFFE\">\n" +
+        "</p>");
     //初始化LIFF
     var initializeLiff = function initializeLiff(myLiffId) {
         liff

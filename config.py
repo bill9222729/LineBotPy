@@ -31,7 +31,7 @@ class Config:
     STORE_IMAGE_URL = 'https://i.imgur.com/YiR7sqB.jpg'
 
     # 伺服器位置
-    SERVER_URI = 'https://c4e5f8563940.ngrok.io'
+    SERVER_URI = 'https://b96fa6a69746.ap.ngrok.io'
 
     # Notify資訊
     NOTIFY_CLIENT_ID = 'SUMVZ46FKbFjW6FBYnIEX0'

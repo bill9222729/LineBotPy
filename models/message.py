@@ -22,7 +22,7 @@ class AllMessage:
                     },
                     {
                         "type": "text",
-                        "text": "嗨，我是屎蛋，我不只會訂餐，還會幫你\n做很多事情ㄛ！先加入我們體驗更完善的\n服務吧！",
+                        "text": "嗨，我是OrderBot，我不只會訂餐，還會幫你\n做很多事情ㄛ！先加入我們體驗更完善的\n服務吧！",
                         "wrap": True,
                         "size": "sm",
                         "decoration": "none",

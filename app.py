@@ -68,7 +68,9 @@ PAY_WEB_URL = ''
 def shutdown_session(exception=None):
     db_session.remove()
 
-
+@app.route("/haha")
+def haha():
+    return "haha"
 # 測試用
 @app.route('/sendjson', methods=['POST'])
 def sendjson():
@@ -523,15 +525,15 @@ def handle_message(event):
             line_bot_api.reply_message(reply_token, TextSendMessage(text="恭喜你成為管理員了"))
             return
 
-        # 其他
-        # 使用客青雲的API取得回應內容
-        r = requests.get("http://api.qingyunke.com/api.php?key=free&appid=0&msg=" + message_text)
-        msg = eval(r.text)['content']
-        # 使用繁化姬來簡轉繁
-        rr = requests.get("https://api.zhconvert.org/convert?text={msg}&converter=Taiwan".format(msg=msg))
-        msg_Taiwan = json.loads(rr.text)
-        # 回應使用者
-        line_bot_api.reply_message(reply_token, TextSendMessage(text=msg_Taiwan['data']['text']))
+        # # 其他
+        # # 使用客青雲的API取得回應內容
+        # r = requests.get("http://api.qingyunke.com/api.php?key=free&appid=0&msg=" + message_text)
+        # msg = eval(r.text)['content']
+        # # 使用繁化姬來簡轉繁
+        # rr = requests.get("https://api.zhconvert.org/convert?text={msg}&converter=Taiwan".format(msg=msg))
+        # msg_Taiwan = json.loads(rr.text)
+        # # 回應使用者
+        # line_bot_api.reply_message(reply_token, TextSendMessage(text=msg_Taiwan['data']['text']))
 
 # 收到語音訊息
 @handler.add(MessageEvent, message=AudioMessage)

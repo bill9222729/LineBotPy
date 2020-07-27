@@ -58,7 +58,7 @@ handler = WebhookHandler(Config.CHANNEL_SECRET)
 line_bot_api_server = LineBotApi(Config.CHANNEL_ACCESS_TOKEN_SERVER)
 handler_server = WebhookHandler(Config.CHANNEL_SECRET_SERVER)
 
-# 出大絕直接設定全域變數給付款連結
+# 出大絕直接設定全域變數給付款連結dd
 PAY_WEB_URL = ''
 
 

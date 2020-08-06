@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <title>F.O.R.</title>
+        <script src="https://static.line-scdn.net/liff/edge/2.1/sdk.js"></script>
+    </head>
+    <body>
+        
+
+        <div id='profile' align='center' style="visibility: hidden;">
+            <table border="1">
+                <tr>
+                    <th>姓氏</th> <th><input id="LastName" type="text" style="text-align: center;"></th>
+                </tr>
+                <tr>
+                    <th>先生/小姐</th> <th><select name="MorFem" id="select1"><option value="先生">先生</option><option value="小姐">小姐</option></select></th>
+                </tr>
+                <tr>
+                    <th>電話</th> <th><input id="Phone" type="number" style="text-align: center;"></th>
+                </tr>
+                <tr>
+                    <th>人數</th> <th><input id="Amount" type="number" style="text-align: center;"></th>
+                </tr>
+                <tr>
+                    <th colspan="2"><input type="submit" style="text-align: center;" value="送出訂位" onclick="printReservation()"></th>
+                </tr>
+
+            </table>
+
+        </div>
+
+        <script>
+            var table;
+            
+            function initializeLiff(myLiffId) {
+                liff
+                    .init({
+                        liffId: myLiffId
+                    })
+                    .then(() => {
+                        // start to use LIFF's api
+                        checkOS();
+                        
+                    })
+                    .catch((err) => {
+                    });
+            }
+
+            initializeLiff('1654173476-3e2Peo5W');
+
+            function checkOS()
+            {
+                if(liff.getOS()=='ios')
+                {
+                    window.alert('ios用戶目前不支援使用此功能');
+                    liff.closeWindow();
+                }
+                else
+                {
+                    initializeApp();
+                }
+            }
+
+            function initializeApp() {
+                liff.scanCode().then(result => {
+                    // e.g. result = { value: "Hello LIFF app!" }
+                    const stringifiedResult = JSON.stringify(result);
+                    var results = String(stringifiedResult).split("\"");
+                    
+                    if(results[3] != 'null')
+                    {
+                        table = results[3];
+                        liff.sendMessages([{
+                            'type': 'text',
+                            'text': table
+                        }]).then(function() {
+                            
+                        }).catch(function(error) {
+                            window.alert('Error sending message: ' + error);
+                        });
+                        //document.getElementById('profile').style.visibility = 'visible';
+                        liff.closeWindow();
+                    }
+                    
+                }).catch(err => {
+
+                });
+            }
+
+            
+
+            
+        </script>
+
+    </body>
+</html>

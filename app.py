@@ -141,6 +141,10 @@ def sentimentAnalysis():
 def booking():
     return render_template(r"booking.html")
 
+# 掃描QRCode
+@app.route('/scanQR')
+def scanQR():
+    return render_template(r"scanQR.html")
 
 # 會員中心
 @app.route('/profile')
@@ -311,7 +315,10 @@ def handle_message_server(event):
     if reply_token == '00000000000000000000000000000000':
         return 'ok'
 
-    line_bot_api_server.reply_message(reply_token, TextSendMessage(text=message_text))
+    if message_text == "發送公告":
+        line_bot_api_server.reply_message(reply_token, TextSendMessage(text="請輸入你要發送的公告內容"))
+    else:
+        line_bot_api_server.reply_message(reply_token, TextSendMessage(text="公告已發送"))
 
 
 @handler_server.add(PostbackEvent)
@@ -504,7 +511,7 @@ def handle_message(event):
                 confirm_template = ConfirmTemplate(
                     text='{},數量為:{}?'.format(product_name, num_item),
                     actions=[
-                        PostbackAction(label='繼續選購', text='繼續選購', data='當日外帶'),
+                        PostbackAction(label='繼續選購', text='繼續選購', data='out'),
                         PostbackAction(label='確認訂單', text='確認訂單', data='確認訂單')
                     ])
 
@@ -672,7 +679,7 @@ def handler_postback(event):
                                                                             URIAction(
                                                                                 type='uri',
                                                                                 label='點我掃描',
-                                                                                uri="https://liff.line.me/1654280234-Wabazm3B"
+                                                                                uri="https://liff.line.me/1654173476-3e2Peo5W"
                                                                             )
                                                                         ]
                                                                     )))
